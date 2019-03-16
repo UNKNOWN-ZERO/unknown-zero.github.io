@@ -6,24 +6,26 @@
     
 
     
-    <title>0x0000 Let&#39;s Get Started | 0&#39;s devlog</title>
+    <title>0x0001 Minifilter Driver#0 | 0&#39;s devlog</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     
         <meta name="keywords" content="Development,LibraNoir,C,C++,C#,Windows,Kernel">
     
-    <meta name="description" content="IntroductionIn recent ransomware threat, a solution ensures our data is needed. So let’s make a security software running on Windows that notify us when unidentified programs access a file. The name m">
+    <meta name="description" content="Beginning Minifilter DriverBefore we start, if you don’t know about Windows Filesystem Minifilter Driver, read this articles at MSDN. Filter Manager Architecture If an application requests a file IO t">
 <meta name="keywords" content="Development,LibraNoir,C,C++,C#,Windows,Kernel">
 <meta property="og:type" content="article">
-<meta property="og:title" content="0x0000 Let&#39;s Get Started">
-<meta property="og:url" content="https://unknown-zero.github.io/2019/02/24/LibraNoir-0/index.html">
+<meta property="og:title" content="0x0001 Minifilter Driver#0">
+<meta property="og:url" content="https://unknown-zero.github.io/2019/03/16/LibraNoir-1/index.html">
 <meta property="og:site_name" content="0&#39;s devlog">
-<meta property="og:description" content="IntroductionIn recent ransomware threat, a solution ensures our data is needed. So let’s make a security software running on Windows that notify us when unidentified programs access a file. The name m">
+<meta property="og:description" content="Beginning Minifilter DriverBefore we start, if you don’t know about Windows Filesystem Minifilter Driver, read this articles at MSDN. Filter Manager Architecture If an application requests a file IO t">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2019-02-24T06:24:46.716Z">
+<meta property="og:image" content="https://unknown-zero.github.io/image/filter-manager-architecture.gif">
+<meta property="og:updated_time" content="2019-03-16T07:05:25.399Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="0x0000 Let&#39;s Get Started">
-<meta name="twitter:description" content="IntroductionIn recent ransomware threat, a solution ensures our data is needed. So let’s make a security software running on Windows that notify us when unidentified programs access a file. The name m">
+<meta name="twitter:title" content="0x0001 Minifilter Driver#0">
+<meta name="twitter:description" content="Beginning Minifilter DriverBefore we start, if you don’t know about Windows Filesystem Minifilter Driver, read this articles at MSDN. Filter Manager Architecture If an application requests a file IO t">
+<meta name="twitter:image" content="https://unknown-zero.github.io/image/filter-manager-architecture.gif">
     
 
     
@@ -143,14 +145,14 @@
 </div>
 
                         <div class="main-body-content">
-                            <article id="post-LibraNoir-0" class="article article-single article-type-post" itemscope="" itemprop="blogPost">
+                            <article id="post-LibraNoir-1" class="article article-single article-type-post" itemscope="" itemprop="blogPost">
     <div class="article-inner">
         
             <header class="article-header">
                 
     
         <h1 class="article-title" itemprop="name">
-        0x0000 Let&#39;s Get Started
+        0x0001 Minifilter Driver#0
         </h1>
     
 
@@ -160,8 +162,8 @@
             <div class="article-meta">
                 
     <div class="article-date">
-        <a href="/2019/02/24/LibraNoir-0/" class="article-date">
-            <time datetime="2019-02-24T05:05:04.000Z" itemprop="datePublished">2019-02-24</time>
+        <a href="/2019/03/16/LibraNoir-1/" class="article-date">
+            <time datetime="2019-03-16T06:15:32.000Z" itemprop="datePublished">2019-03-16</time>
         </a>
     </div>
 
@@ -177,35 +179,24 @@
         
         
         <div class="article-entry" itemprop="articleBody">
-            <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>In recent ransomware threat, a solution ensures our data is needed. So let’s make a security software running on Windows that notify us when unidentified programs access a file.</p>
-<p>The name means nothing. It’s just my favorite colour and my zodiac sign.</p>
-<h2 id="Brief-Plan"><a href="#Brief-Plan" class="headerlink" title="Brief Plan"></a>Brief Plan</h2><p>Ok, the project can be divided by 3 parts.</p>
-<ol>
-<li><strong>A filesystem minifilter driver</strong> that detects the file IO and notify Windows application.</li>
-<li><strong>The communication module</strong> that communicates with minifilter driver.</li>
-<li><strong>A Windows application</strong> with UI.</li>
-</ol>
-<h2 id="Filesystem-Minifilter-Driver"><a href="#Filesystem-Minifilter-Driver" class="headerlink" title="Filesystem Minifilter Driver"></a>Filesystem Minifilter Driver</h2><p>As we can see in its name, it’s <strong>kernel mode</strong>. It mean we must be careful about memory usage, algorithm, function calls and etc.. When we violate one of its rules, we may see BSOD(Blue Screen of Death). That’s why we have to fully understand what we use. I mean WE MUST READ MANUALS AND FOLLOW. <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/_ifsk/" target="_blank" rel="noopener">The Windows Hardware Dev Center</a> especially <strong>“Installable file system” chapter</strong> is what we need. Also we need <a href="https://docs.microsoft.com/ko-kr/windows-hardware/drivers/download-the-wdk" target="_blank" rel="noopener">Windows Driver Kit</a>, and <a href="https://docs.microsoft.com/ko-kr/visualstudio/install/install-visual-studio?view=vs-2017" target="_blank" rel="noopener">Visual Studio 2017</a> to develop and build a filesystem minifilter driver.</p>
-<p>The Features of FileSystem Minifilter Driver can be summarized as follow.</p>
-<ul>
-<li>Interfere File IO Operation.</li>
-<li>Communicate or Notify Information about Files and Processes.</li>
-<li>Process Protection.</li>
-</ul>
-<p>The Filesystem Minifilter Driver will be developed with C.</p>
-<h2 id="Communication-Module"><a href="#Communication-Module" class="headerlink" title="Communication Module"></a>Communication Module</h2><p>It’s a simple module sets of communicating functions with filesystem minifilter driver. It will be developed with C++ as DLL to support feature to a Windows application.</p>
-<h2 id="Windows-application"><a href="#Windows-application" class="headerlink" title="Windows application"></a>Windows application</h2><p>This part is mostly about UI showing information to user.</p>
-<p>When filesystem minifilter driver notify us that untrusted file IO happens, our program must show information about process information and its target file information for us to determine whether we permit or deny its file IO. This is a main feature of our solution. Also, we provide additional features to ensure user’s data, such as locking folders with password, auto backup on designated folder and process network usage monitor.</p>
-<p>Furthermore, we could make a cloud server to share user’s experience data like white list and black list of process reputation.</p>
-<p>This part will be developed with C# and winform.</p>
-<h3 id="OK-Let’s-Get-Started"><a href="#OK-Let’s-Get-Started" class="headerlink" title="OK! Let’s Get Started!!!"></a>OK! Let’s Get Started!!!</h3>
+            <h2 id="Beginning-Minifilter-Driver"><a href="#Beginning-Minifilter-Driver" class="headerlink" title="Beginning Minifilter Driver"></a>Beginning Minifilter Driver</h2><p>Before we start, if you don’t know about Windows Filesystem Minifilter Driver, read <a href="https://docs.microsoft.com/ko-kr/windows-hardware/drivers/ifs/file-system-minifilter-drivers" target="_blank" rel="noopener">this articles</a> at MSDN.</p>
+<h2 id="Filter-Manager-Architecture"><a href="#Filter-Manager-Architecture" class="headerlink" title="Filter Manager Architecture"></a>Filter Manager Architecture</h2><p><img src="/image/filter-manager-architecture.gif" alt=""></p>
+<p>If an application requests a file IO to OS or uses an API related with file IO, the workflow of its requests transmits just like this picture. All requests are processed in order and going down to lowest hierarchy which is Hardware and its reply will be going up to the user level which is an application. we develop a filesystem minifilter driver to intercept the request at the filesystem driver stack. OK, now let’s take a look at the basic source code.</p>
+<h2 id="Basic-Source-Code"><a href="#Basic-Source-Code" class="headerlink" title="Basic Source Code"></a>Basic Source Code</h2><p>Though this code is not fully complete, we can understand its function. </p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;fltKernel.h&gt;</span></span></span><br><span class="line"></span><br><span class="line">NTSTATUS</span><br><span class="line">DriverEntry(</span><br><span class="line">	_In_ PDRIVER_OBJECT DriverObject,</span><br><span class="line">	_In_ PUNICODE_STRING RegistryPath</span><br><span class="line">)</span><br><span class="line">&#123;</span><br><span class="line">  NTSTATUS status;</span><br><span class="line"></span><br><span class="line">  status = FltRegisterFilter(DriverObject,</span><br><span class="line">	&amp;FilterRegistration,</span><br><span class="line">	&amp;LibraNoirData.Filter);</span><br><span class="line">  </span><br><span class="line">  status = FltStartFiltering(LibraNoirData.Filter);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DriverEntry function is a main function of our driver. When we load our filesystem minifilter driver into our kernel, The filter manager of filesystem call this routine at first place. In this function, we register our minifilter driver routine and notify filter manager that we want our driver in the filtering stack to start filtering.</p>
+<p>Now, let’s take a look at the data structure using in registering filter driver.</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> _<span class="title">LIBRANOIRFILTER_DATA_</span> &#123;</span></span><br><span class="line">  PDRIVER_OBJECT DriverObject;</span><br><span class="line">  PFLT_FILTER Filter;</span><br><span class="line">&#125;LIBRANOIR_DATA, *PLIBRANOIR_DATA;</span><br><span class="line"></span><br><span class="line">CONST FLT_REGISTRATION FilterRegistration = &#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">sizeof</span>(FLT_REGISTRATION),         	<span class="comment">//  Size</span></span><br><span class="line">	FLT_REGISTRATION_VERSION,               <span class="comment">//  Version</span></span><br><span class="line">	<span class="number">0</span>,                                      <span class="comment">//  Flags</span></span><br><span class="line"></span><br><span class="line">	<span class="literal">NULL</span>,                                   <span class="comment">//  Context</span></span><br><span class="line">	Callbacks,                              <span class="comment">//  Operation callbacks</span></span><br><span class="line"></span><br><span class="line">	LibraNoirFilterUnload,                  <span class="comment">//  MiniFilterUnload</span></span><br><span class="line"></span><br><span class="line">	LibraNoirFilterInstanceSetup,           <span class="comment">//  InstanceSetup</span></span><br><span class="line">	LibraNoirFilterInstanceQueryTeardown,   <span class="comment">//  InstanceQueryTeardown</span></span><br><span class="line">	<span class="literal">NULL</span>,		                        <span class="comment">//  InstanceTeardownStart</span></span><br><span class="line">	<span class="literal">NULL</span>,	                        	<span class="comment">//  InstanceTeardownComplete</span></span><br><span class="line"></span><br><span class="line">	<span class="literal">NULL</span>,                           <span class="comment">//  GenerateFileName</span></span><br><span class="line">	<span class="literal">NULL</span>,                           <span class="comment">//  GenerateDestinationFileName</span></span><br><span class="line">	<span class="literal">NULL</span>                            <span class="comment">//  NormalizeNameComponent</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CONST FLT_OPERATION_REGISTRATION Callbacks[] = &#123;</span><br><span class="line">	&#123; IRP_MJ_CREATE,          <span class="number">0</span>, LibraNoirFilterPreOperation, <span class="literal">NULL</span> &#125;,</span><br><span class="line">	&#123; IRP_MJ_SET_INFORMATION, <span class="number">0</span>, LibraNoirFilterPreOperation, <span class="literal">NULL</span> &#125;,</span><br><span class="line">	&#123; IRP_MJ_OPERATION_END &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>“_LIBRANOIRFILTER_DATA_” structure has two elements <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/wdm/ns-wdm-_driver_object" target="_blank" rel="noopener">PDRIVER_OBJECT</a> and <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/fltkernel/ns-fltkernel-_flt_related_objects" target="_blank" rel="noopener">PFLT_FILTER</a> which is needed at registering filter driver. <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/fltkernel/ns-fltkernel-_flt_registration" target="_blank" rel="noopener">“FLT_REGISTRATION”</a> array contains data of our driver runtime. <a href="https://docs.microsoft.com/en-us/windows-hardware/drivers/ddi/content/fltkernel/ns-fltkernel-_flt_operation_registration" target="_blank" rel="noopener">“FLT_OPERATION_REGISTRATION”</a> array contains information of what kind of file IO request that we want to filter.</p>
+<p>You can see the IRP list on <a href="https://docs.microsoft.com/ko-kr/windows-hardware/drivers/kernel/irp-major-function-codes" target="_blank" rel="noopener">here</a>. <strong>File Write/Append(IRP_MJ_CREATE)</strong> and <strong>File Deletion(IRP_MJ_SET_INFORMATION)</strong> is needed to filter in our minifilter driver.</p>
+<h3 id="Next-time-We-will-take-a-look-at-filtering-callback-functions"><a href="#Next-time-We-will-take-a-look-at-filtering-callback-functions" class="headerlink" title="Next time, We will take a look at filtering callback functions"></a>Next time, We will take a look at filtering callback functions</h3>
         </div>
         <footer class="article-footer">
             
 
 
 
-    <a data-url="https://unknown-zero.github.io/2019/02/24/LibraNoir-0/" data-id="cjtb3q0z60004s8uqf0hvq0lq" class="article-share-link"><i class="fa fa-share"></i>Share</a>
+    <a data-url="https://unknown-zero.github.io/2019/03/16/LibraNoir-1/" data-id="cjtb3q0z20001s8uqce585o4n" class="article-share-link"><i class="fa fa-share"></i>Share</a>
 <script>
     (function ($) {
         $('body').on('click', function() {
@@ -275,17 +266,18 @@
             "@type": "Person",
             "name": "unknown"
         },
-        "headline": "0x0000 Let&#39;s Get Started",
-        "image": "https://unknown-zero.github.io",
+        "headline": "0x0001 Minifilter Driver#0",
+        "image": "https://unknown-zero.github.io/image/filter-manager-architecture.gif",
         "keywords": "Development LibraNoir C C++ C# Windows Kernel",
         "genre": "Development Log LibraNoir",
-        "datePublished": "2019-02-24",
-        "dateCreated": "2019-02-24",
-        "dateModified": "2019-02-24",
-        "url": "https://unknown-zero.github.io/2019/02/24/LibraNoir-0/",
-        "description": "IntroductionIn recent ransomware threat, a solution ensures our data is needed. So let’s make a security software running on Windows that notify us when unidentified programs access a file.
-The name m"
-        "wordCount": 368
+        "datePublished": "2019-03-16",
+        "dateCreated": "2019-03-16",
+        "dateModified": "2019-03-16",
+        "url": "https://unknown-zero.github.io/2019/03/16/LibraNoir-1/",
+        "description": "Beginning Minifilter DriverBefore we start, if you don’t know about Windows Filesystem Minifilter Driver, read this articles at MSDN.
+Filter Manager Architecture
+If an application requests a file IO t"
+        "wordCount": 821
     }
 </script>
 
@@ -335,20 +327,10 @@ The name m"
         
 <nav id="article-nav">
     
-        <a href="/2019/03/16/LibraNoir-1/" id="article-nav-newer" class="article-nav-link-wrap">
-        <strong class="article-nav-caption">newer</strong>
-        <p class="article-nav-title">
-        
-            0x0001 Minifilter Driver#0
-        
-        </p>
-        <i class="icon fa fa-chevron-right" id="icon-chevron-right"></i>
-    </a>
     
-    
-        <a href="/2019/02/02/Hello-World/" id="article-nav-older" class="article-nav-link-wrap">
+        <a href="/2019/02/24/LibraNoir-0/" id="article-nav-older" class="article-nav-link-wrap">
         <strong class="article-nav-caption">older</strong>
-        <p class="article-nav-title">0x0000 Hello World!</p>
+        <p class="article-nav-title">0x0000 Let&#39;s Get Started</p>
         <i class="icon fa fa-chevron-left" id="icon-chevron-left"></i>
         </a>
     
